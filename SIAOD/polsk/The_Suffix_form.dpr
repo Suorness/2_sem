@@ -13,7 +13,7 @@ Type
   Stack_Priority:integer;
   Rank:integer;
   end;
-
+ {Вот так вот}
 var
   str:string;
   rankEX:integer;
@@ -197,6 +197,8 @@ repeat
   writeln(Make_Suffix_form(str,rankEX));
   writeln('Rank = ',rankEX);
   writeln;
+  writeln;
+  
 until str='end';
 
 end.

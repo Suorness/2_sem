@@ -474,10 +474,8 @@ begin
   new(tempvalue);
   firstlist:=first^.next;
   secondlist:=second^.next;
-  worktime:= enterNum div takttime;
-  if enterNum mod takttime <>0 then
-    inc(worktime);
-  inaction:=worktime*takttime;
+  inaction:=takttime*(EnterNum div takttime +1)-enternum;
+  worktime:=EnterNum div takttime +1;
 
   for i:=1 to 3 do
     add(first,firstlist,enterNum,2,true,3,massfield);
@@ -591,10 +589,6 @@ end;
 
 begin
   ini;
-  worktime:=0;
-  enterNum:=3;
-  takttime:=4;
-  inaction:=0;
   SetConsoleOutputCP(1251);
   SetConsoleCP(1251);
   for j:=1 to 10 do
@@ -606,7 +600,7 @@ begin
       proccese(first,second,firstlist,secondlist,massField,j,i,worktime,inaction);
       AWorktime[j,i]:=worktime;
       Ainaction[j,i]:=inaction;
-      writeln('Результат ',218/(worktime*i):0:3,' ',inaction:3,' ',j:2,' ',i:2,' ', ((worktime*i-inaction)-218):3);
+      writeln('Результат ',218/(worktime*i)*100:0:3,' ',inaction:3,' ',j:2,' ',i:2);
     end;
   readln;
 end.

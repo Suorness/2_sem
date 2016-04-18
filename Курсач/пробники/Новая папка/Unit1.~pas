@@ -1,0 +1,46 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+
+Type
+  TTestrecord = ^testt;
+  testt= record
+    name:string;
+    year:string;
+    next:TTestRecord;
+       end;
+  TRecordArray = array of TTestRecord;
+  TForm1 = class(TForm)
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+
+
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  list:TTestRecord;
+  strm:TMemoryStream;
+  ra : TRecordArray;
+implementation
+
+  
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  //setlength(ra,5);
+  strm.Write(ra[0], SizeOf(TTestRecord) * Length(ra));
+end;
+
+end.

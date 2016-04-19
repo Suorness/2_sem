@@ -29,7 +29,7 @@ begin
   newcell^.Relative_Priority:=Relative_P;
   newcell^.Stack_Priority:=Stack_P;
   newcell^.Rank:=rank;
-  rankEX:=rankEX+rank;
+  //rankEX:=rankEX+rank;
   Stak:=newcell;
 end;
 
@@ -118,6 +118,7 @@ begin
   begin
     testend:=false;
     Determination_of_priority(str[i],Relative_P,Stack_P,rank);
+    RankEX:=RankEX+rank;
     repeat
       if  Relative_P=0 then
       begin

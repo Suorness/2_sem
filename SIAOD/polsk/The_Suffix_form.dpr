@@ -19,7 +19,7 @@ var
   rankEX:integer;
 
 
-Procedure addToStak(Var Stak:TStak;sim:char;Relative_P,Stack_P,rank:integer;var rankEX:integer);
+Procedure addToStak(Var Stak:TStak;sim:char;Relative_P,Stack_P,rank:integer);
 var
   newcell:Tstak;
 begin
@@ -29,18 +29,9 @@ begin
   newcell^.Relative_Priority:=Relative_P;
   newcell^.Stack_Priority:=Stack_P;
   newcell^.Rank:=rank;
-  //rankEX:=rankEX+rank;
   Stak:=newcell;
 end;
 
-Procedure printStak(stak:TStak);
-begin
-  while Stak<>nil do
-  begin
-    writeln(Stak^.sim);
-    stak:=stak^.next;
-  end;
-end;
 
 Procedure DeleteCell(Var Stak:TStak;var Str:string);
 begin
@@ -133,7 +124,7 @@ begin
       begin
         if  (stak=nil) or (Relative_P>stak^.Stack_Priority) then
         begin
-          addToStak(Stak,str[i],Relative_P,Stack_P,rank,rankEX);
+          addToStak(Stak,str[i],Relative_P,Stack_P,rank);
           testend:=true;
         end
         else
@@ -191,6 +182,7 @@ end;
 
 begin
 repeat
+  rankEX:=0;
   writeln('Please enter a mathematical expression:');
   inputdata(str);
   writeln;

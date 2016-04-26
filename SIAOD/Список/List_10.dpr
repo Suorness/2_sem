@@ -368,8 +368,6 @@ var
 
   temp,start:queue;
 begin
-  {new(start);
-  start:=title;}
   new(temp);
   temp:=title^.next;
   del(title,massfield);
@@ -382,9 +380,7 @@ begin
   copylist(list,temp);
 
   title^.tail:=list;
-  {test}
 
-  //dispose(temp);
 
 end;
 
@@ -591,16 +587,22 @@ begin
   ini;
   SetConsoleOutputCP(1251);
   SetConsoleCP(1251);
+
   for j:=1 to 10 do
+  begin
     for i:=1 to 10 do
     begin
       worktime:=0;
       inaction:=0;
       massfield:=Cmassfield;
       proccese(first,second,firstlist,secondlist,massField,j,i,worktime,inaction);
-      AWorktime[j,i]:=worktime;
-      Ainaction[j,i]:=inaction;
-      writeln('Результат ',218/(worktime*i)*100:0:3,' ',inaction:3,' ',j:2,' ',i:2);
+      //AWorktime[j,i]:=worktime;
+      //Ainaction[j,i]:=inaction;
+
+      //writeln('Результат ',218/(worktime*i)*100:0:3,' ',inaction:3,' ',j:2,' ',i:2);
+      Writeln('Тактов на ввод = ', j:2,' тактов процессора = ',i:2, ' КПД = ', 218/(worktime*i)*100:0:5,'% бездействия = ', inaction);
     end;
+    writeln;
+  end;
   readln;
-end.
+end.       

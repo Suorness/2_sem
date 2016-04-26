@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, StdCtrls, ComCtrls, Buttons;
+  Dialogs, Menus, StdCtrls, ComCtrls, Buttons, ExtCtrls, jpeg;
 
 type
   Tlist= ^TlistEL;
@@ -31,6 +31,17 @@ type
     BitBtn1: TBitBtn;
     MOpen: TMenuItem;
     BitBtn2: TBitBtn;
+    DetailInfo: TPanel;
+    PanelPoster: TImage;
+    PanelFilmTitle: TEdit;
+    PanelGenre: TLabel;
+    PanelGenreLabel: TEdit;
+    PanelYearLabel: TLabel;
+    PanelYearEdit: TEdit;
+    PanelCountryLabel: TLabel;
+    Edit1: TEdit;
+    PanelProducerLabel: TLabel;
+    PanelProducerEdit: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure MSaveAsClick(Sender: TObject);

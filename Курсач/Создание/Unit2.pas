@@ -58,6 +58,7 @@ type
     procedure BChangePicClick(Sender: TObject);
     procedure BSaveClick(Sender: TObject);
     procedure BSaveChangesClick(Sender: TObject);
+    procedure BChangesClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -129,6 +130,25 @@ begin
   FMain.FLagChanges:=true;
   Fmain.showLV(Fmain);
   FChangeData.Close;
+end;
+
+procedure TFChangeData.BChangesClick(Sender: TObject);
+begin
+  ETitle.Enabled:=true;
+  SPYear.Enabled:=true;
+  CBGenre.Enabled:=true;
+  EContry.Enabled:=true;
+  EDirect.Enabled:=true;
+  EHistory.Enabled:=true;
+  SPMoney.Enabled:=true;
+  SPMoneyUp.Enabled:=true;
+  SPWath.Enabled:=true;
+  SPTime.Enabled:=true;
+  MMSubr.Enabled:=true;
+  BChangePic.Enabled:=true;
+  BSaveChanges.Enabled:=true;
+  BChanges.Enabled:=false;
+  FChangeData.BSave.Visible:=false;
 end;
 
 end.

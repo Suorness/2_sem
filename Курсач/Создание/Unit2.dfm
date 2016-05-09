@@ -1,6 +1,6 @@
 object FChangeData: TFChangeData
-  Left = 333
-  Top = 14
+  Left = 722
+  Top = 0
   Width = 644
   Height = 707
   Caption = 'FChangeData'
@@ -349,6 +349,7 @@ object FChangeData: TFChangeData
       Height = 25
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
       TabOrder = 13
+      OnClick = BChangesClick
     end
     object BSave: TButton
       Left = 104

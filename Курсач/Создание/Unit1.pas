@@ -42,8 +42,9 @@ type
     BBChange: TBitBtn;
     BBSearch: TBitBtn;
     BBVie: TBitBtn;
+    BBUpDate: TBitBtn;
     BBSort: TBitBtn;
-    BitBtn1: TBitBtn;
+    BBRandom: TBitBtn;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -57,6 +58,10 @@ type
     procedure BBAddClick(Sender: TObject);
     procedure BBChangeClick(Sender: TObject);
     procedure BBDelClick(Sender: TObject);
+    procedure BBVieClick(Sender: TObject);
+    procedure BBSearchClick(Sender: TObject);
+    procedure BBUpDateClick(Sender: TObject);
+    procedure BBSortClick(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -71,11 +76,13 @@ type
     procedure showLV(Sender:TOBject);
     function SaveFilm(Sender:ToBject;AlwaysAsk: Boolean): Boolean;
     procedure ReadFile(Sender:TOBject);
+    procedure Search(sender:Tobject;StrSearch:string);
 
     // если необходимо, запросить сохранение изменений
     // true если продолжаем (открываем новый файл или еще что)
     // false отмена продолжения (не открываем)
     function TestOfSave(Changes:boolean):boolean;
+    procedure sortLV(Sender:TObject);
   end;
 
 var
@@ -83,7 +90,7 @@ var
 
 implementation
 
-uses Unit2;
+uses Unit2, Unit3;
 
 {$R *.dfm}
 
@@ -129,13 +136,24 @@ begin
   listofFilm.next:=nil;
   FLagChanges:=false;
   Poster_None:='C:\Users\Mike\Desktop\Labs\2_sem\курсач\Создание\pic\poster_none.jpg';
- // FFileName:='C:\Users\Mike\Desktop\Labs\2_sem\курсач\Создание\File\List.dat';
   FFileName:='';
 end;
 
 procedure TFMain.AddToLV(Sender:TObject);
 begin
   FchangeData.Show;
+  FchangeData.ETitle.Enabled:=true;
+  FchangeData.SPYear.Enabled:=true;
+  FchangeData.CBGenre.Enabled:=true;
+  FchangeData.EContry.Enabled:=true;
+  FchangeData.EDirect.Enabled:=true;
+  FchangeData.EHistory.Enabled:=true;
+  FchangeData.SPMoney.Enabled:=true;
+  FchangeData.SPMoneyUp.Enabled:=true;
+  FchangeData.SPWath.Enabled:=true;
+  FchangeData.SPTime.Enabled:=true;
+  FchangeData.MMSubr.Enabled:=true;
+  FchangeData.BChangePic.Enabled:=true;
   FchangeData.ETitle.Text:='';
   FchangeData.SPYear.Value:=0;
   FchangeData.CBGenre.Text:='';
@@ -199,7 +217,11 @@ begin
     FchangeData.BSaveChanges.Visible:=true;
     FchangeData.BChanges.Visible:=true;
     FchangeData.BSave.Visible:=false;
-    FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic);
+    IF  ListOFFilm.pic <> '' then
+      FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic)
+    else
+      FchangeData.ImgPoster.Picture.LoadFromFile(FMain.Poster_None)
+
   end;
 end;
 
@@ -338,7 +360,7 @@ end;
 
 procedure TFMain.BBChangeClick(Sender: TObject);
 begin
-  ChangeLV(FMain);    
+  ChangeLV(FMain);
 end;
 
 procedure TFMain.BBDelClick(Sender: TObject);
@@ -346,4 +368,119 @@ begin
   DeletLV(FMain);
 end;
 
+procedure TFMain.BBVieClick(Sender: TObject);
+begin
+  ChangeLV(FMain);
+  FChangeData.ETitle.Enabled:=false;
+  FChangeData.SPYear.Enabled:=false;
+  FChangeData.CBGenre.Enabled:=false;
+  FChangeData.EContry.Enabled:=false;
+  FChangeData.EDirect.Enabled:=false;
+  FChangeData.EHistory.Enabled:=false;
+  FChangeData.SPMoney.Enabled:=false;
+  FChangeData.SPMoneyUp.Enabled:=false;
+  FChangeData.SPWath.Enabled:=false;
+  FChangeData.SPTime.Enabled:=false;
+  FChangeData.MMSubr.Enabled:=false;
+  FChangeData.BChangePic.Enabled:=false;
+  FChangeData.BSaveChanges.Enabled:=false;
+  FChangeData.BSave.Visible:=false;
+  FChangeData.BChanges.Enabled:=true;
+end;
+
+procedure TFMain.BBSearchClick(Sender: TObject);
+begin
+  Fsearch.Width:=312;
+  FSearch.Height:=200;
+  FSearch.EName.Text:='';
+  FSearch.show;
+
+end;
+
+procedure TFMain.BBUpDateClick(Sender: TObject);
+begin
+  showLV(Fmain);
+end;
+
+procedure TFmain.Search(sender:Tobject;StrSearch:string);
+Var
+  ListItem:TlistItem;
+  i:integer;
+begin
+  i:=0;
+  LVFilm.Clear;
+  ListOfFilm:=HeaderList;
+  while ListOfFilm<>nil do
+  begin
+    if  StrSearch=ListOfFilm.Name then
+    begin
+      LVFilm.Items.BeginUpdate;
+      listItem:=LVFilm.Items.add;
+      ListItem.Caption:=listofFilm.Name;
+      ListItem.SubItems.add(listofFilm.Year);
+      ListItem.SubItems.add(listofFilm.Genre);
+      LVFilm.Items.EndUpdate;
+    end;
+    listOfFilm:=listOfFilm.next;
+  end;
+end;
+
+procedure TFMain.sortLV(Sender:TObject);
+Var
+  TempHeaderList,TempListOfFilm,temp:TFilm;
+  i:integer;
+  search:boolean;
+Procedure qSort;
+begin
+  
+end;
+begin
+  new(TempHeaderList);
+  TempListOfFilm:=TempHeaderList;
+  for i:=0 to LVFilm.Items.Count-1 do
+  begin
+    ListOfFilm:=HeaderList;
+    search:=false;
+    while (ListOfFilm<>nil) and not search do
+    begin
+      if (LVFilm.Items[i].Caption=ListOfFilm.Name) and
+         (LVFilm.Items[i].SubItems[0]=ListOfFilm.Year) and
+         (LVFilm.Items[i].SubItems[1]=ListOfFilm.Genre) then
+      begin
+        new(TempListOfFilm.next);
+        TempListOfFilm:=TempListOfFilm.next;
+        TempListOfFilm^:=ListOfFilm^;
+        search:=true;
+      end;
+      ListOfFilm:=ListOfFilm.next;
+    end;
+  end;
+
+
+  //окончание
+  TempListOfFilm:=TempHeaderList;
+  while TempListOfFilm.next<>nil do
+  begin
+    temp:=templistofFilm;
+    while TempListOfFilm.next<>nil do
+    begin
+      temp:=TempListOfFilm;
+      TempListOfFilm:=TempListOfFilm.next;
+    end;
+    dispose(TempListOfFilm);
+    temp.next:=nil;
+    TempListOfFilm:=TempHeaderList;
+  end;
+  dispose(TempHeaderList);
+
+end;
+
+
+procedure TFMain.BBSortClick(Sender: TObject);
+begin
+  sortLV(Fmain);
+end;
+
 end.
+
+

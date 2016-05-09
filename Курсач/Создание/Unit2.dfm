@@ -360,8 +360,8 @@ object FChangeData: TFChangeData
       OnClick = BSaveClick
     end
   end
-  object dlgAddPic: TOpenDialog
-    Left = 24
+  object dlgAddPic: TOpenPictureDialog
+    Left = 40
     Top = 432
   end
 end

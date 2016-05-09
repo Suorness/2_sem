@@ -106,6 +106,7 @@ begin
   FMain.ListOfFilm.Disk:=MMSubr.Text;
   FMain.ListOfFilm.pic:=ImageName;
   Fmain.showLV(Fmain);
+  FMain.FLagChanges:=true;
   FChangeData.Close;
 
 
@@ -125,6 +126,7 @@ begin
   FMain.ListOfFilm.Time:=inttostr(SPTime.Value);
   FMain.ListOfFilm.Disk:=MMSubr.Text;
   FMain.ListOfFilm.pic:=ImageName;
+  FMain.FLagChanges:=true;
   Fmain.showLV(Fmain);
   FChangeData.Close;
 end;

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, StdCtrls, ComCtrls, ExtCtrls;
+  Dialogs, Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons;
 
 type
   TFilm=^listFilm;
@@ -33,15 +33,17 @@ type
     TopFileSaveAs: TMenuItem;
     TopFile: TMenuItem;
     TopFileNew: TMenuItem;
-    Edit1: TEdit;
     PanelFilm: TPanel;
     LVFilm: TListView;
-    PFunction: TPanel;
-    BAdd: TButton;
-    BChange: TButton;
-    BDelet: TButton;
-    BTEstSave: TButton;
-    BTestOpen: TButton;
+    dlgSave: TSaveDialog;
+    Panel1: TPanel;
+    BBAdd: TBitBtn;
+    BBDel: TBitBtn;
+    BBChange: TBitBtn;
+    BBSearch: TBitBtn;
+    BBVie: TBitBtn;
+    BBSort: TBitBtn;
+    BitBtn1: TBitBtn;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -50,6 +52,11 @@ type
     procedure BDeletClick(Sender: TObject);
     procedure BTEstSaveClick(Sender: TObject);
     procedure BTestOpenClick(Sender: TObject);
+    procedure TopFileSaveClick(Sender: TObject);
+    procedure TopFileSaveAsClick(Sender: TObject);
+    procedure BBAddClick(Sender: TObject);
+    procedure BBChangeClick(Sender: TObject);
+    procedure BBDelClick(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -62,12 +69,13 @@ type
     procedure ChangeLV(sender:TOBject);
     procedure DeletLV(Sender:TOBject);
     procedure showLV(Sender:TOBject);
-    procedure SaveFilm(Sender:ToBject);
+    function SaveFilm(Sender:ToBject;AlwaysAsk: Boolean): Boolean;
     procedure ReadFile(Sender:TOBject);
-    //проверка на необходимость сохранения изменения
-    //true - надо сохрнить
-    // false не надо
-    function TestOfSave(FlagChanges:boolean):boolean;
+
+    // если необходимо, запросить сохранение изменений
+    // true если продолжаем (открываем новый файл или еще что)
+    // false отмена продолжения (не открываем)
+    function TestOfSave(Changes:boolean):boolean;
   end;
 
 var
@@ -81,22 +89,35 @@ uses Unit2;
 
 procedure TFMain.TopFileOpenClick(Sender: TObject);
 begin
+  if not TestOfSave(FlagChanges) then Exit;
   if  not dlgOpen.Execute then exit;
   FFileName := dlgOpen.Files[0];
-  //test string!!!
-  edit1.Text:=FFileName;
-  {Тут нужно продолжение
-  Очистка старого списка
-  Загрузка типизированныго файла
-  Еще можно установить фильтр типа файла}
-
+  ReadFile(Fmain);
+  showLV(FMain);
 end;
 
 procedure TFMain.TopFileNewClick(Sender: TObject);
+Var
+  temp:TFilm;
 begin
-  {Проверка сохранений
-  очистка  старого списка
-  }
+  if not TestOfSave(FLagChanges) then exit;
+  LVFilm.Clear;
+  FFileName := '';
+  temp:=nil;
+  while HeaderList<>ListOfFilm do
+  begin
+    ListOfFilm:=HeaderList;
+    while ListOfFilm.next<>nil do
+    begin
+      temp:=ListOfFilm;
+      ListOfFilm:=ListOfFilm.next;
+    end;
+    ListOfFilm:=nil;
+    dispose(ListOfFilm);
+    ListOfFilm:=temp;
+    ListOfFilm.next:=nil;
+  end;
+  FLagChanges := False;
 end;
 
 
@@ -211,11 +232,17 @@ begin
   //SaveFilm(Fmain);
 end;
 
-Procedure TFMain.SaveFilm(Sender:TOBject);
+function TFMain.SaveFilm(Sender:TOBject;AlwaysAsk: Boolean): Boolean;
 Var
   FileForSave:File of ListFilm;
   Data:ListFilm;
 begin
+  Result := False;
+  if (FFileName = '') or AlwaysAsk then
+  begin
+    if not dlgSave.Execute then Exit;
+    FFileName := dlgSave.Files[0];
+  end;
   AssignFile(FileForSave,FFileName);
   rewrite(FileForSave);
   ListOfFilm:=HeaderList.next;
@@ -227,6 +254,9 @@ begin
     ListOfFilm:=ListOfFilm.next;
   end;
   closeFile(FileForSave);
+  
+  FLagChanges := False;
+  Result := True
 end;
 
 procedure TFMain.ReadFile(Sender:TOBject);
@@ -263,7 +293,7 @@ end;
 
 procedure TFMain.BTEstSaveClick(Sender: TObject);
 begin
-  SaveFilm(FMain);
+  SaveFilm(FMain,true);
 end;
 
 procedure TFMain.BTestOpenClick(Sender: TObject);
@@ -272,9 +302,48 @@ begin
   showLV(FMain);
 end;
 
-procedure TFMain.TestOfSave(Sender:Tobject);
+function TFMain.TestOfSave(Changes:boolean):boolean;
+Var
+  MSBResult:integer;
 begin
-  
+  Result:= not Changes;
+  if  Changes then
+  MSBResult:= MessageBox(Handle, 'Файл был изменен. Сохранить изменения?', 'Сохранить?', MB_YESNOCANCEL or MB_ICONQUESTION);
+    case MSBResult of
+      IDYES:
+        begin
+          Result := SaveFilm(Fmain,false);
+        end;
+      IDNO:
+        Result := True;
+      IDCANCEL:
+        Result := False;
+    end;
+end;
+
+procedure TFMain.TopFileSaveClick(Sender: TObject);
+begin
+  SaveFilm(Fmain,false);
+end;
+
+procedure TFMain.TopFileSaveAsClick(Sender: TObject);
+begin
+  SaveFilm(Fmain,true);
+end;
+
+procedure TFMain.BBAddClick(Sender: TObject);
+begin
+  AddToLV(FMain);
+end;
+
+procedure TFMain.BBChangeClick(Sender: TObject);
+begin
+  ChangeLV(FMain);    
+end;
+
+procedure TFMain.BBDelClick(Sender: TObject);
+begin
+  DeletLV(FMain);
 end;
 
 end.

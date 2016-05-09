@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Spin,JPEG;
+  Dialogs, StdCtrls, ExtCtrls, Spin,JPEG, ExtDlgs;
 
 
 type
@@ -30,7 +30,6 @@ type
     PanelInfo: TPanel;
     ImgPoster: TImage;
     ETitle: TEdit;
-    dlgAddPic: TOpenDialog;
     BChangePic: TButton;
     LYear: TLabel;
     LGenre: TLabel;
@@ -55,6 +54,7 @@ type
     BSaveChanges: TButton;
     BChanges: TButton;
     BSave: TButton;
+    dlgAddPic: TOpenPictureDialog;
     procedure BChangePicClick(Sender: TObject);
     procedure BSaveClick(Sender: TObject);
     procedure BSaveChangesClick(Sender: TObject);

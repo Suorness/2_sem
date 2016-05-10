@@ -52,6 +52,17 @@ type
     BBUpDate: TBitBtn;
     BBSort: TBitBtn;
     BBRandom: TBitBtn;
+    TopExit: TMenuItem;
+    TopFunc: TMenuItem;
+    TopFuncVie: TMenuItem;
+    TopFuncADd: TMenuItem;
+    TopFuncChange: TMenuItem;
+    TopFuncDel: TMenuItem;
+    TopFuncSearch: TMenuItem;
+    N7: TMenuItem;
+    N8: TMenuItem;
+    txt1: TMenuItem;
+    N9: TMenuItem;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -70,6 +81,7 @@ type
     procedure BBUpDateClick(Sender: TObject);
     procedure BBSortClick(Sender: TObject);
     procedure BBRandomClick(Sender: TObject);
+    procedure TopExitClick(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -593,6 +605,12 @@ end;
 procedure TFMain.BBRandomClick(Sender: TObject);
 begin
   randomFilm(FMain);
+end;
+
+procedure TFMain.TopExitClick(Sender: TObject);
+begin
+  if not TestOfSave(FLagChanges) then exit;
+  close;  
 end;
 
 end.

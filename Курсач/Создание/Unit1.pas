@@ -2,6 +2,8 @@ unit Unit1;
 
 interface
 
+
+
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons;
@@ -25,6 +27,11 @@ type
   end;
 
 type
+  Func = function(First,second:ListFilm):boolean;
+
+
+
+type
   TFMain = class(TForm)
     TopMenu: TMainMenu;
     dlgOpen: TOpenDialog;
@@ -45,6 +52,17 @@ type
     BBUpDate: TBitBtn;
     BBSort: TBitBtn;
     BBRandom: TBitBtn;
+    N1: TMenuItem;
+    A1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    N5: TMenuItem;
+    N6: TMenuItem;
+    N7: TMenuItem;
+    N8: TMenuItem;
+    txt1: TMenuItem;
+    N9: TMenuItem;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,6 +80,8 @@ type
     procedure BBSearchClick(Sender: TObject);
     procedure BBUpDateClick(Sender: TObject);
     procedure BBSortClick(Sender: TObject);
+    procedure BBRandomClick(Sender: TObject);
+    procedure N1Click(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -77,12 +97,16 @@ type
     function SaveFilm(Sender:ToBject;AlwaysAsk: Boolean): Boolean;
     procedure ReadFile(Sender:TOBject);
     procedure Search(sender:Tobject;StrSearch:string);
+    //function FuncName(Senger:TObject;First,Second:ListFilm):boolean;
 
     // если необходимо, запросить сохранение изменений
     // true если продолжаем (открываем новый файл или еще что)
     // false отмена продолжения (не открываем)
     function TestOfSave(Changes:boolean):boolean;
-    procedure sortLV(Sender:TObject);
+   procedure sortLV(Sender:TObject;SRav:Func);
+   procedure StartSort(Sender:TObject;TypeSort:integer);
+   procedure randomFilm(Sender:TObject);
+
   end;
 
 var
@@ -90,7 +114,7 @@ var
 
 implementation
 
-uses Unit2, Unit3;
+uses Unit2, Unit3, Unit4;
 
 {$R *.dfm}
 
@@ -200,7 +224,9 @@ begin
   if LVFilm.SelCount=1 then
   begin
     ListOfFilm:=HeaderList;
-    while LVFilm.Selected.Caption<>ListOfFilm.Name do
+    while (LVFilm.Selected.Caption<>ListOfFilm.Name) or
+          (LVFilm.Selected.SubItems[0]<>ListOfFilm.Year) or
+          (LVFilm.Selected.SubItems[1]<>ListOfFilm.Genre) do
       ListOfFilm:=ListOfFilm.next;
     FchangeData.Show;
     FchangeData.ETitle.Text:=ListOfFilm.Name;
@@ -233,7 +259,9 @@ begin
   if LVFilm.SelCount=1 then
   begin
     ListOfFilm:=HeaderList;
-    while LVFilm.Selected.Caption<>ListOfFilm.next.Name do
+    while (LVFilm.Selected.Caption<>ListOfFilm.next.Name) or
+    (LVFilm.Selected.SubItems[0]<>ListOfFilm.next.Year) or
+    (LVFilm.Selected.SubItems[1]<>ListOfFilm.next.Genre) do
       ListOfFilm:=ListOfFilm.next;
     Temp:=ListOfFilm.next;
     ListOfFilm.next:=ListOfFilm.next.next;
@@ -407,7 +435,7 @@ Var
   ListItem:TlistItem;
   i:integer;
 begin
-  i:=0;
+  i:=0;{Я забыл написать случай где нет результатов}
   LVFilm.Clear;
   ListOfFilm:=HeaderList;
   while ListOfFilm<>nil do
@@ -425,60 +453,164 @@ begin
   end;
 end;
 
-procedure TFMain.sortLV(Sender:TObject);
-Var
-  TempHeaderList,TempListOfFilm,temp:TFilm;
-  i:integer;
-  search:boolean;
-Procedure qSort;
+function FuncName(First,Second:ListFilm):boolean;
 begin
-  
+  Result:=First.Name>Second.Name;
 end;
+
+function FuncYear(First,Second:ListFilm):boolean;
 begin
-  new(TempHeaderList);
-  TempListOfFilm:=TempHeaderList;
+  Result:=First.Year>Second.Year;
+end;
+
+function FuncTime(First,Second:ListFilm):boolean;
+begin
+  Result:=First.Time>Second.Time;
+end;
+
+function FuncContry(First,Second:ListFilm):boolean;
+begin
+  Result:=First.Contry>Second.Contry;
+end;
+
+procedure TFMain.sortLV(Sender:TObject;SRav:Func);
+//procedure sortLV(SRav:Func);
+Var
+  SortMass:array of ListFilm;
+  search:boolean;
+  i:integer;
+  ArLength:integer;
+  ListItem:TlistItem;
+
+procedure Sort(Var SortMass:array of ListFilm;ARLength:integer);
+Var
+  i,j:integer;
+  temp:ListFilm;
+
+begin
+  for i:=0 to ARLength-1 do
+  begin
+    for j:=0 to ARLength-i-1 do
+    begin
+      if Srav(SortMass[j],SortMass[j+1]) then
+      begin
+        temp:=SortMass[j+1];
+        SortMass[j+1]:=SortMass[j];
+        SortMass[j]:=temp;
+      end;
+    end;
+  end;
+end;
+
+begin
+  setlength(Sortmass,LVFilm.Items.Count);
   for i:=0 to LVFilm.Items.Count-1 do
   begin
-    ListOfFilm:=HeaderList;
     search:=false;
-    while (ListOfFilm<>nil) and not search do
+    ListOfFilm:=HeaderList.next;
+    while (ListOfFilm<>nil) and  not search do
     begin
       if (LVFilm.Items[i].Caption=ListOfFilm.Name) and
          (LVFilm.Items[i].SubItems[0]=ListOfFilm.Year) and
          (LVFilm.Items[i].SubItems[1]=ListOfFilm.Genre) then
       begin
-        new(TempListOfFilm.next);
-        TempListOfFilm:=TempListOfFilm.next;
-        TempListOfFilm^:=ListOfFilm^;
+        SortMass[i]:=listOfFilm^;
+        SortMass[i].next:=nil;
         search:=true;
       end;
       ListOfFilm:=ListOfFilm.next;
     end;
   end;
-
-
-  //окончание
-  TempListOfFilm:=TempHeaderList;
-  while TempListOfFilm.next<>nil do
+  ArLength:=LVFilm.Items.Count-1;
+  sort(SortMass,ArLength);
+  LVFilm.Clear;
+  LVFilm.Items.BeginUpdate;
+  for i:=0 to ArLength do
   begin
-    temp:=templistofFilm;
-    while TempListOfFilm.next<>nil do
-    begin
-      temp:=TempListOfFilm;
-      TempListOfFilm:=TempListOfFilm.next;
-    end;
-    dispose(TempListOfFilm);
-    temp.next:=nil;
-    TempListOfFilm:=TempHeaderList;
-  end;
-  dispose(TempHeaderList);
+    listItem:=LVFilm.Items.add;
+    ListItem.Caption:=SortMass[i].Name;
+    ListItem.SubItems.add(SortMass[i].Year);
+    ListItem.SubItems.add(SortMass[i].Genre);
 
+  end;
+  LVFilm.Items.EndUpdate;
 end;
 
 
 procedure TFMain.BBSortClick(Sender: TObject);
 begin
-  sortLV(Fmain);
+  //sortLV(Fmain,FuncName);
+  FSort.Show;
+end;
+
+procedure TFmain.StartSort(Sender:Tobject;TypeSort:integer);
+begin
+  case TypeSort of
+  0:    sortLV(Fmain,FuncName);
+  1:    sortLV(Fmain,FuncYear);
+  2:    sortLV(Fmain,FuncTime);
+  3:    sortLV(Fmain,FuncContry);
+  end;
+end;
+
+procedure TFMain.randomFilm(Sender:TObject);
+Var
+  i:integer;
+begin
+  randomize;
+  LVFilm.Clear;
+  showLV(Fmain);
+  ListOfFilm:=HeaderList;
+  For i:=1 to random(LVFilm.Items.Count-1)+1 do
+  begin
+    ListOfFilm:=ListOfFilm.next;
+  end;
+  FchangeData.Show;
+  FchangeData.ETitle.Text:=ListOfFilm.Name;
+  FchangeData.SPYear.Value:=strtoint(ListOfFilm.Year);
+  FchangeData.CBGenre.Text:=ListOfFilm.Genre;
+  FchangeData.EContry.Text:=ListOfFilm.Contry;
+  FchangeData.EDirect.Text:=ListOfFilm.Direct;
+  FchangeData.EHistory.Text:=ListOfFilm.History;
+  FchangeData.SPMoney.Value:=strtoint(ListOfFilm.Money);
+  FchangeData.SPMoneyUp.Value:=strtoint(ListOfFilm.MoneyUp);
+  FchangeData.SPWath.Value:=strtoint(ListOfFilm.Watch);
+  FchangeData.SPTime.Value:=strtoint(ListOfFilm.Time);
+  FchangeData.MMSubr.Text:=ListOfFilm.Disk;
+  FchangeData.BSaveChanges.Visible:=true;
+  FchangeData.BChanges.Visible:=true;
+  FchangeData.BSave.Visible:=false;
+  IF  ListOFFilm.pic <> '' then
+    FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic)
+  else
+    FchangeData.ImgPoster.Picture.LoadFromFile(FMain.Poster_None);
+
+  FChangeData.ETitle.Enabled:=false;
+  FChangeData.SPYear.Enabled:=false;
+  FChangeData.CBGenre.Enabled:=false;
+  FChangeData.EContry.Enabled:=false;
+  FChangeData.EDirect.Enabled:=false;
+  FChangeData.EHistory.Enabled:=false;
+  FChangeData.SPMoney.Enabled:=false;
+  FChangeData.SPMoneyUp.Enabled:=false;
+  FChangeData.SPWath.Enabled:=false;
+  FChangeData.SPTime.Enabled:=false;
+  FChangeData.MMSubr.Enabled:=false;
+  FChangeData.BChangePic.Enabled:=false;
+  FChangeData.BSaveChanges.Enabled:=false;
+  FChangeData.BSave.Visible:=false;
+  FChangeData.BChanges.Enabled:=true;
+end;
+
+procedure TFMain.BBRandomClick(Sender: TObject);
+begin
+  randomFilm(FMain);
+end;
+
+procedure TFMain.N1Click(Sender: TObject);
+begin
+  if not TestOfSave(FLagChanges) then exit;
+  close;  
 end;
 
 end.

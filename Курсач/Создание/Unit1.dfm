@@ -1183,40 +1183,61 @@ object FMain: TFMain
         Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1082#1072#1082'...'
         OnClick = TopFileSaveAsClick
       end
-      object N1: TMenuItem
+      object TopExit: TMenuItem
         Caption = #1042#1099#1093#1086#1076
-        OnClick = N1Click
+        OnClick = TopExitClick
       end
     end
-    object A1: TMenuItem
+    object TopFunc: TMenuItem
       Caption = #1060#1091#1085#1082#1094#1080#1080
-      object N2: TMenuItem
+      object TopFuncVie: TMenuItem
         Caption = #1055#1088#1086#1089#1084#1086#1090#1088
+        OnClick = BBVieClick
       end
-      object N3: TMenuItem
+      object TopFuncADd: TMenuItem
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100
+        OnClick = BBAddClick
       end
-      object N4: TMenuItem
+      object TopFuncChange: TMenuItem
         Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+        OnClick = BBChangeClick
       end
-      object N5: TMenuItem
+      object TopFuncDel: TMenuItem
         Caption = #1059#1076#1072#1083#1080#1090#1100
+        OnClick = BBDelClick
       end
-      object N6: TMenuItem
+      object TopFuncSearch: TMenuItem
         Caption = #1055#1086#1080#1089#1082
+        OnClick = BBSearchClick
       end
-      object N7: TMenuItem
+      object TopFuncSort: TMenuItem
         Caption = #1057#1086#1088#1090#1080#1088#1086#1074#1082#1072
+        OnClick = BBSortClick
       end
-      object N8: TMenuItem
+      object TopFuncRandom: TMenuItem
         Caption = #1057#1083#1091#1095#1072#1081#1085#1099#1081' '#1092#1080#1083#1100#1084
+        OnClick = BBRandomClick
       end
-      object txt1: TMenuItem
+      object ExpTxt: TMenuItem
         Caption = #1069#1082#1089#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1074' txt'
       end
-      object N9: TMenuItem
+      object TopFuncUpdate: TMenuItem
         Caption = #1054#1073#1085#1086#1074#1080#1090#1100
+        OnClick = BBUpDateClick
       end
+    end
+    object TopAbout: TMenuItem
+      Caption = #1057#1087#1088#1072#1074#1082#1072
+      object TopAboutProgr: TMenuItem
+        Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+      end
+      object TopAboutA: TMenuItem
+        Caption = #1054#1073' '#1072#1074#1090#1086#1088#1077
+      end
+    end
+    object TopExit2: TMenuItem
+      Caption = #1042#1099#1093#1086#1076
+      OnClick = TopExitClick
     end
   end
   object dlgOpen: TOpenDialog

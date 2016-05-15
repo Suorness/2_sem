@@ -30,6 +30,8 @@ Type
     //время прибытия
     timeComing:TDateTime;
   end;
+
+
 type
   TFMain = class(TForm)
     ButtomListPlain: TButton;
@@ -45,8 +47,6 @@ type
     ComboBoxAirPlain: TComboBox;
     TimeOutPut: TDateTimePicker;
     TimeComing: TDateTimePicker;
-    BTest: TButton;
-    BTest2: TButton;
     BAddDataList: TButton;
     BDowloadData: TButton;
     SENumberFlight: TSpinEdit;
@@ -54,26 +54,40 @@ type
     BDel: TButton;
     BChange: TButton;
     BSaveChanges: TButton;
+    LabSearchText: TLabel;
+    ESearchPlace: TEdit;
+    BSearchPlace: TButton;
+    ListSearchResult: TListView;
+    Label1: TLabel;
+    EOilResult: TEdit;
     procedure ButtomListPlainClick(Sender: TObject);
-    procedure BTestClick(Sender: TObject);
     procedure ComboBoxAirPlainDropDown(Sender: TObject);
     procedure BAddDataListClick(Sender: TObject);
     procedure BDowloadDataClick(Sender: TObject);
     procedure BDelClick(Sender: TObject);
     procedure BChangeClick(Sender: TObject);
     procedure BSaveChangesClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BSearchPlaceClick(Sender: TObject);
+    procedure ListTableChange(Sender: TObject; Item: TListItem;
+      Change: TItemChange);
   private
     { Private declarations }
   public
-    procedure addToFileListTable(Sender:TObject);
-    procedure addToListTable(Sender:TObject);
-    procedure DeleteDateInList(Sender:TObject);
+
+    procedure addToFileListTable(Sender:TObject;roadPlainList:string;roadTimeTable:string);
+    procedure addToListTable(Sender:TObject;roadTimeTable:string);
+    procedure DeleteDateInList(Sender:TObject;roadPlainList:string;roadTimeTable:string);
     procedure printDate(Sender:TOBject;var ChangeIndex:integer);
-    procedure SaveChanges(Sender:TObject;ChangeIndex:integer);
+    procedure SaveChanges(Sender:TObject;ChangeIndex:integer;roadTimeTable:string;roadPlainList:string);
+    procedure SearchPlace(Sender:TObject;roadTimeTable:string);
+    procedure CalculeteOil(Sender:TObject;roadTimeTable:string);
   end;
 
 var
   ChangeIndex:integer;
+  roadPlainList:string;
+  roadTimeTable:string;
   FMain: TFMain;
 
 implementation
@@ -87,13 +101,9 @@ begin
   flistPlain.show;
 end;
 
-procedure TFMain.BTestClick(Sender: TObject);
 
-begin
-  addToListTable(FMain);
-end;
 
-//end;
+
 
 procedure TFMain.ComboBoxAirPlainDropDown(Sender: TObject);
 Var
@@ -112,7 +122,8 @@ begin
   closefile(FileForUpDate)
 end;
 
-procedure TFMain.addToFileListTable(Sender:TObject);
+
+procedure TFMain.addToFileListTable(Sender:TObject;roadPlainList:string;roadTimeTable:string);
 Var
   FileForSave:File of TTimeTable;
   FileInfo:File of TAirPlain;
@@ -121,7 +132,7 @@ Var
 begin
   if (SENumberFlight.value <>0) and(EPlace.text <>'' ) and(SERange.value<>0 )and(ComboBoxAirPlain.text <>'' )  then
   begin
-    assignFile(FileInfo,'PlainList.dat');
+    assignFile(FileInfo,roadPlainList);
     reset(FileInfo);
 
     adddata.numberFlight:=SENumberFlight.value;
@@ -137,7 +148,7 @@ begin
     closeFile(FileInfo);
     adddata.timeOutPut:=timeOutPut.DateTime;
     adddata.timeComing:=timeComing.DateTime;
-    assignfile(FileForSave,'TimeTable.dat');
+    assignfile(FileForSave,roadTimeTable);
     reset(FileForSave);
     seek(FileForSave,FileSize(FileForSave));
     write(FileForSave,AddData);
@@ -157,17 +168,16 @@ begin
 
   end
   else
-  showmessage('error');
+  showmessage('Missing data');
 end;
-procedure TFMain.addToListTable(Sender:TObject);
+procedure TFMain.addToListTable(Sender:TObject;roadTimeTable:string);
 Var
  FileForLoad:File of TTimeTable;
  AddData:TTimeTable;
  ListItem:TlistItem;
- //formattedDateTime : string;
 begin
   listTable.Clear;
-  assignfile(FileForLoad,'TimeTable.dat');
+  assignfile(FileForLoad,roadTimeTable);
   reset(FileForLoad);
   while not eof(FileForLoad) do
   begin
@@ -182,20 +192,19 @@ begin
     ListItem.SubItems.add(TimeToStr(AddData.timeComing));
     listTable.Items.EndUpdate;
   end;
-  //showmessage('End File');
   closefile(FileForLoad);
 end;
 
 procedure TFMain.BAddDataListClick(Sender: TObject);
 begin
-  addToFileListTable(FMain);
+  addToFileListTable(FMain,roadPlainList,roadTimeTable);
 end;
 
 procedure TFMain.BDowloadDataClick(Sender: TObject);
 begin
-  addToListTable(Fmain);
+  addToListTable(Fmain,roadTimeTable);
 end;
-procedure TFMain.DeleteDateInList(Sender:TObject);
+procedure TFMain.DeleteDateInList(Sender:TObject;roadPlainList:string;roadTimeTable:string);
 Var
  FileForUpDate:File of TTimeTable;
  AddData:TTimeTable;
@@ -205,32 +214,31 @@ begin
   if listTable.SelCount=1 then
   begin
     ListTable.DeleteSelected;
-    assignfile(FileForUpDate,'TimeTable.dat');
+    assignfile(FileForUpDate,roadTimeTable);
     rewrite(FileForUpDate);
+    assignFile(FileInfo,roadPlainList);
+      for i:=0 to ListTAble.Items.Count-1 do
+      begin
+        reset(FileInfo);
+        adddata.numberFlight:=strtoint(ListTable.Items[i].Caption);
+        adddata.place:=ListTable.Items[i].SubItems.Strings[0];
+        adddata.range:=strtoint(ListTable.Items[i].SubItems.Strings[1]);
 
-    assignFile(FileInfo,'PlainList.dat');
-
-    for i:=0 to ListTAble.Items.Count-1 do
-    begin
-      reset(FileInfo);
-      adddata.numberFlight:=strtoint(ListTable.Items[i].Caption);
-      adddata.place:=ListTable.Items[i].SubItems.Strings[0];
-      adddata.range:=strtoint(ListTable.Items[i].SubItems.Strings[1]);
-
-      repeat
-        read(FileInfo,adddata.aircraft);
-      until (ListTable.Items[i].SubItems.Strings[2]=adddata.aircraft.TypeAirPlain) or eof(FileInfo);
+        repeat
+          read(FileInfo,adddata.aircraft);
+        until (ListTable.Items[i].SubItems.Strings[2]=adddata.aircraft.TypeAirPlain) or eof(FileInfo);
 
 
-      adddata.timeOutPut:=strtoTime(ListTable.Items[i].SubItems.Strings[3]);
-      adddata.timeComing:=strtoTime(ListTable.Items[i].SubItems.Strings[4]);
-      write(FileForUpDate,AddData);
-    end;
-    closeFile(fileInfo);
-    closeFile(FileForUpDate);
-  end
-  else
-  showmessage('Выделите однин тип');
+        adddata.timeOutPut:=strtoTime(ListTable.Items[i].SubItems.Strings[3]);
+        adddata.timeComing:=strtoTime(ListTable.Items[i].SubItems.Strings[4]);
+        write(FileForUpDate,AddData);
+        closeFile(fileInfo);
+      end;
+      closeFile(FileForUpDate);
+      CalculeteOil(Fmain,roadTimeTable);
+    end
+    else
+      showmessage('Выделите однин тип');
 end;
 
 procedure TFMain.printDate(Sender:TOBject;var ChangeIndex:integer);
@@ -242,7 +250,6 @@ begin
     BSaveChanges.Enabled:=true;
     BDowloadData.Enabled:=false;
     BAddDataList.Enabled:=false;
-
     Changeindex:=ListTable.ItemFocused.Index;
     SENumberFlight.value:=strtoint(ListTable.items[ChangeIndex].caption);
     EPlace.text:=ListTable.items[changeIndex].SubItems.Strings[0];
@@ -253,7 +260,7 @@ begin
   end;
 end;
 
-procedure TFMain.SaveChanges(Sender:TObject;ChangeIndex:integer);
+procedure TFMain.SaveChanges(Sender:TObject;ChangeIndex:integer;roadTimeTable:string;roadPlainList:string);
 Var
   FileForUpDate:File of TTimeTable;
   FileInfo:File of TAirPlain;
@@ -263,13 +270,12 @@ begin
   ListTable.items[ChangeIndex].caption:=inttostr(SENumberFlight.value);
   ListTable.items[changeIndex].SubItems.Strings[0]:=EPlace.text;
   ListTable.items[changeIndex].SubItems.Strings[1]:=inttostr(SERange.value);
-  {OXtung!!}
   ListTable.items[changeIndex].SubItems.Strings[2]:=ComboBoxAirPlain.Text;
   ListTable.items[changeIndex].SubItems.Strings[3]:=TimeToStr(timeOutPut.Time);
   ListTable.items[changeIndex].SubItems.Strings[4]:=TimeToStr(timeComing.Time);
-  assignfile(FileForUpDate,'TimeTable.dat');
+  assignfile(FileForUpDate,roadTimeTable);
   rewrite(FileForUpDate);
-  assignFile(FileInfo,'PlainList.dat');
+  assignFile(FileInfo,roadPlainList);
 
   for i:=0 to ListTAble.Items.Count-1 do
   begin
@@ -277,12 +283,9 @@ begin
     adddata.numberFlight:=strtoint(ListTable.Items[i].Caption);
     adddata.place:=ListTable.Items[i].SubItems.Strings[0];
     adddata.range:=strtoint(ListTable.Items[i].SubItems.Strings[1]);
-
     repeat
       read(FileInfo,adddata.aircraft);
     until (ListTable.Items[i].SubItems.Strings[2]=adddata.aircraft.TypeAirPlain) or eof(FileInfo);
-
-
     adddata.timeOutPut:=strtoTime(ListTable.Items[i].SubItems.Strings[3]);
     adddata.timeComing:=strtoTime(ListTable.Items[i].SubItems.Strings[4]);
     write(FileForUpDate,AddData);
@@ -298,15 +301,14 @@ begin
     BAddDataList.Enabled:=true;
     BSaveChanges.Enabled:=false;
     BDowloadData.Enabled:=true;
-
-
     closeFile(fileInfo);
     closeFile(FileForUpDate);
+    CalculeteOil(Fmain,roadTimeTable);
 end;
 
 procedure TFMain.BDelClick(Sender: TObject);
 begin
-  DeleteDateInList(FMain);
+  DeleteDateInList(FMain,roadPlainList,roadTimeTable);
 end;
 
 procedure TFMain.BChangeClick(Sender: TObject);
@@ -316,7 +318,70 @@ end;
 
 procedure TFMain.BSaveChangesClick(Sender: TObject);
 begin
-  SaveChanges(FMain,ChangeIndex);
+  SaveChanges(FMain,ChangeIndex,roadTimeTable,roadPlainList);
 end;
+
+procedure TFMain.FormCreate(Sender: TObject);
+begin
+  BSaveChanges.Enabled:=false;
+  roadPlainList:='PlainList.dat';
+  roadTimeTable:='TimeTable.dat';
+end;
+
+procedure TFMain.SearchPlace(Sender:TObject;roadTimeTable:string);
+Var
+  FileForSearch:File of TTimeTable;
+  Date:TTimeTable;
+  ListItem:TlistItem;
+begin
+  listSearchResult.clear;
+  assignFile(FileForSearch,roadTimeTable);
+  reset(FileForSearch);
+  while not eof(FileForSearch) do
+  begin
+    read(FileForSearch,Date);
+    If  Date.place = ESearchPlace.text then
+    begin
+      listSearchResult.Items.BeginUpdate;
+      listItem:=listSearchResult.Items.add;
+      ListItem.Caption:=inttostr(Date.numberFlight);
+      ListItem.SubItems.add(TimeToStr(Date.timeOutPut));
+      listSearchResult.Items.EndUpdate;
+    end;
+  end;
+  closeFile(FileForSearch);
+  ESearchPlace.text:='';
+end;
+
+procedure TFMain.BSearchPlaceClick(Sender: TObject);
+begin
+  SearchPlace(FMain,roadTimeTable);
+end;
+
+procedure TFMain.CalculeteOil(Sender:TObject;roadTimeTable:string);
+Var
+  FileTable:File of TTimeTable;
+  Date:TTimeTable;
+  Oil:real;
+begin
+  assignFile(FileTable,roadTimeTable);
+  reset(FileTable);
+  oil:=0;
+  while not eof(FileTable) do
+  begin
+    read(FileTable,Date);
+    Oil:=oil+date.range/1000*date.aircraft.oil
+  end;
+  closeFile(FileTable);
+  EOilResult.Text:=inttostr(Round(Oil))+' л.';
+end;
+
+
+procedure TFMain.ListTableChange(Sender: TObject; Item: TListItem;
+  Change: TItemChange);
+begin
+  CalculeteOil(Fmain,roadTimeTable);
+end;
+
 
 end.

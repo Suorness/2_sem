@@ -52,17 +52,21 @@ type
     BBUpDate: TBitBtn;
     BBSort: TBitBtn;
     BBRandom: TBitBtn;
-    N1: TMenuItem;
-    A1: TMenuItem;
-    N2: TMenuItem;
-    N3: TMenuItem;
-    N4: TMenuItem;
-    N5: TMenuItem;
-    N6: TMenuItem;
-    N7: TMenuItem;
-    N8: TMenuItem;
-    txt1: TMenuItem;
-    N9: TMenuItem;
+    TopExit: TMenuItem;
+    TopFunc: TMenuItem;
+    TopFuncVie: TMenuItem;
+    TopFuncADd: TMenuItem;
+    TopFuncChange: TMenuItem;
+    TopFuncDel: TMenuItem;
+    TopFuncSearch: TMenuItem;
+    TopFuncSort: TMenuItem;
+    TopFuncRandom: TMenuItem;
+    ExpTxt: TMenuItem;
+    TopFuncUpdate: TMenuItem;
+    TopExit2: TMenuItem;
+    TopAbout: TMenuItem;
+    TopAboutProgr: TMenuItem;
+    TopAboutA: TMenuItem;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -81,7 +85,7 @@ type
     procedure BBUpDateClick(Sender: TObject);
     procedure BBSortClick(Sender: TObject);
     procedure BBRandomClick(Sender: TObject);
-    procedure N1Click(Sender: TObject);
+    procedure TopExitClick(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -201,6 +205,7 @@ begin
   AddToLV(FMain);
 end;
 
+{ListOfFilm HeaderList}
 procedure TFMain.showLV (Sender:TOBject);
 Var
   ListItem:TlistItem;
@@ -218,7 +223,7 @@ begin
  end;
  LVFilm.Items.EndUpdate;
 end;
-
+{ListOFFilm}
 procedure TFMain.ChangeLV(Sender:TOBject);
 begin
   if LVFilm.SelCount=1 then
@@ -251,6 +256,7 @@ begin
   end;
 end;
 
+{Var listOfFilm}
 procedure TFMain.DeletLV(Sender:TOBject);
 Var
   Temp:TFilm;
@@ -282,6 +288,7 @@ begin
   //SaveFilm(Fmain);
 end;
 
+{Var FLagChanges FFileName}
 function TFMain.SaveFilm(Sender:TOBject;AlwaysAsk: Boolean): Boolean;
 Var
   FileForSave:File of ListFilm;
@@ -309,6 +316,7 @@ begin
   Result := True
 end;
 
+{ListOfFilm,FFileName,headerList}
 procedure TFMain.ReadFile(Sender:TOBject);
 Var
   FileForRead:File of ListFilm;
@@ -356,6 +364,8 @@ function TFMain.TestOfSave(Changes:boolean):boolean;
 Var
   MSBResult:integer;
 begin
+{глупая правка}
+  MSBResult:=2;
   Result:= not Changes;
   if  Changes then
   MSBResult:= MessageBox(Handle, 'Файл был изменен. Сохранить изменения?', 'Сохранить?', MB_YESNOCANCEL or MB_ICONQUESTION);
@@ -430,12 +440,13 @@ begin
   showLV(Fmain);
 end;
 
+{ListOfFilm}
 procedure TFmain.Search(sender:Tobject;StrSearch:string);
 Var
   ListItem:TlistItem;
   i:integer;
 begin
-  i:=0;{Я забыл написать случай где нет результатов}
+  i:=0;
   LVFilm.Clear;
   ListOfFilm:=HeaderList;
   while ListOfFilm<>nil do
@@ -448,9 +459,12 @@ begin
       ListItem.SubItems.add(listofFilm.Year);
       ListItem.SubItems.add(listofFilm.Genre);
       LVFilm.Items.EndUpdate;
+      inc(i);
     end;
     listOfFilm:=listOfFilm.next;
   end;
+  if i=0 then
+    messageBox(handle,'Результатов Нет','Не найдено',MB_OK);
 end;
 
 function FuncName(First,Second:ListFilm):boolean;
@@ -473,8 +487,8 @@ begin
   Result:=First.Contry>Second.Contry;
 end;
 
+{ListOfFilm,HeaderList}
 procedure TFMain.sortLV(Sender:TObject;SRav:Func);
-//procedure sortLV(SRav:Func);
 Var
   SortMass:array of ListFilm;
   search:boolean;
@@ -539,7 +553,6 @@ end;
 
 procedure TFMain.BBSortClick(Sender: TObject);
 begin
-  //sortLV(Fmain,FuncName);
   FSort.Show;
 end;
 
@@ -553,6 +566,7 @@ begin
   end;
 end;
 
+{ListOfFilm}
 procedure TFMain.randomFilm(Sender:TObject);
 Var
   i:integer;
@@ -607,10 +621,10 @@ begin
   randomFilm(FMain);
 end;
 
-procedure TFMain.N1Click(Sender: TObject);
+procedure TFMain.TopExitClick(Sender: TObject);
 begin
   if not TestOfSave(FLagChanges) then exit;
-  close;  
+  close;
 end;
 
 end.

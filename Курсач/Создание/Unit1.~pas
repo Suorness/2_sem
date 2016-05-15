@@ -52,6 +52,21 @@ type
     BBUpDate: TBitBtn;
     BBSort: TBitBtn;
     BBRandom: TBitBtn;
+    TopExit: TMenuItem;
+    TopFunc: TMenuItem;
+    TopFuncVie: TMenuItem;
+    TopFuncADd: TMenuItem;
+    TopFuncChange: TMenuItem;
+    TopFuncDel: TMenuItem;
+    TopFuncSearch: TMenuItem;
+    TopFuncSort: TMenuItem;
+    TopFuncRandom: TMenuItem;
+    ExpTxt: TMenuItem;
+    TopFuncUpdate: TMenuItem;
+    TopExit2: TMenuItem;
+    TopAbout: TMenuItem;
+    TopAboutProgr: TMenuItem;
+    TopAboutA: TMenuItem;
     procedure TopFileOpenClick(Sender: TObject);
     procedure TopFileNewClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -70,6 +85,7 @@ type
     procedure BBUpDateClick(Sender: TObject);
     procedure BBSortClick(Sender: TObject);
     procedure BBRandomClick(Sender: TObject);
+    procedure TopExitClick(Sender: TObject);
   private
     //Путь к открытового файла
     FFileName:string;
@@ -344,6 +360,8 @@ function TFMain.TestOfSave(Changes:boolean):boolean;
 Var
   MSBResult:integer;
 begin
+{глупая правка}
+  MSBResult:=2;
   Result:= not Changes;
   if  Changes then
   MSBResult:= MessageBox(Handle, 'Файл был изменен. Сохранить изменения?', 'Сохранить?', MB_YESNOCANCEL or MB_ICONQUESTION);
@@ -423,7 +441,7 @@ Var
   ListItem:TlistItem;
   i:integer;
 begin
-  i:=0;{Я забыл написать случай где нет результатов}
+  i:=0;
   LVFilm.Clear;
   ListOfFilm:=HeaderList;
   while ListOfFilm<>nil do
@@ -436,9 +454,12 @@ begin
       ListItem.SubItems.add(listofFilm.Year);
       ListItem.SubItems.add(listofFilm.Genre);
       LVFilm.Items.EndUpdate;
+      inc(i);
     end;
     listOfFilm:=listOfFilm.next;
   end;
+  if i=0 then
+    messageBox(handle,'Результатов Нет','Не найдено',MB_OK);
 end;
 
 function FuncName(First,Second:ListFilm):boolean;
@@ -462,7 +483,6 @@ begin
 end;
 
 procedure TFMain.sortLV(Sender:TObject;SRav:Func);
-//procedure sortLV(SRav:Func);
 Var
   SortMass:array of ListFilm;
   search:boolean;
@@ -527,7 +547,6 @@ end;
 
 procedure TFMain.BBSortClick(Sender: TObject);
 begin
-  //sortLV(Fmain,FuncName);
   FSort.Show;
 end;
 
@@ -593,6 +612,12 @@ end;
 procedure TFMain.BBRandomClick(Sender: TObject);
 begin
   randomFilm(FMain);
+end;
+
+procedure TFMain.TopExitClick(Sender: TObject);
+begin
+  if not TestOfSave(FLagChanges) then exit;
+  close;
 end;
 
 end.

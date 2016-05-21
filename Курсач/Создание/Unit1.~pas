@@ -205,6 +205,7 @@ begin
   AddToLV(FMain);
 end;
 
+{ListOfFilm HeaderList}
 procedure TFMain.showLV (Sender:TOBject);
 Var
   ListItem:TlistItem;
@@ -222,7 +223,7 @@ begin
  end;
  LVFilm.Items.EndUpdate;
 end;
-
+{ListOFFilm}
 procedure TFMain.ChangeLV(Sender:TOBject);
 begin
   if LVFilm.SelCount=1 then
@@ -255,6 +256,7 @@ begin
   end;
 end;
 
+{Var listOfFilm}
 procedure TFMain.DeletLV(Sender:TOBject);
 Var
   Temp:TFilm;
@@ -286,6 +288,7 @@ begin
   //SaveFilm(Fmain);
 end;
 
+{Var FLagChanges FFileName}
 function TFMain.SaveFilm(Sender:TOBject;AlwaysAsk: Boolean): Boolean;
 Var
   FileForSave:File of ListFilm;
@@ -313,6 +316,7 @@ begin
   Result := True
 end;
 
+{ListOfFilm,FFileName,headerList}
 procedure TFMain.ReadFile(Sender:TOBject);
 Var
   FileForRead:File of ListFilm;
@@ -436,6 +440,7 @@ begin
   showLV(Fmain);
 end;
 
+{ListOfFilm}
 procedure TFmain.Search(sender:Tobject;StrSearch:string);
 Var
   ListItem:TlistItem;
@@ -482,6 +487,7 @@ begin
   Result:=First.Contry>Second.Contry;
 end;
 
+{ListOfFilm,HeaderList}
 procedure TFMain.sortLV(Sender:TObject;SRav:Func);
 Var
   SortMass:array of ListFilm;
@@ -560,6 +566,7 @@ begin
   end;
 end;
 
+{ListOfFilm}
 procedure TFMain.randomFilm(Sender:TObject);
 Var
   i:integer;

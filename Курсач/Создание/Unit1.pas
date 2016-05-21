@@ -219,6 +219,7 @@ begin
   ListItem.Caption:=listofFilm.Name;
   ListItem.SubItems.add(listofFilm.Year);
   ListItem.SubItems.add(listofFilm.Genre);
+  ListItem.SubItems.add(listofFilm.Time);
   listOfFilm:=listOfFilm.next;
  end;
  LVFilm.Items.EndUpdate;
@@ -228,6 +229,18 @@ procedure TFMain.ChangeLV(Sender:TOBject);
 begin
   if LVFilm.SelCount=1 then
   begin
+    FChangeData.ETitle.Enabled:=true;
+    FChangeData.SPYear.Enabled:=true;
+    FChangeData.CBGenre.Enabled:=true;
+    FChangeData.EContry.Enabled:=true;
+    FChangeData.EDirect.Enabled:=true;
+    FChangeData.EHistory.Enabled:=true;
+    FChangeData.SPMoney.Enabled:=true;
+    FChangeData.SPMoneyUp.Enabled:=true;
+    FChangeData.SPWath.Enabled:=true;
+    FChangeData.SPTime.Enabled:=true;
+    FChangeData.MMSubr.Enabled:=true;
+    FChangeData.BSaveChanges.Enabled:=true;
     ListOfFilm:=HeaderList;
     while (LVFilm.Selected.Caption<>ListOfFilm.Name) or
           (LVFilm.Selected.SubItems[0]<>ListOfFilm.Year) or
@@ -246,8 +259,9 @@ begin
     FchangeData.SPTime.Value:=strtoint(ListOfFilm.Time);
     FchangeData.MMSubr.Text:=ListOfFilm.Disk;
     FchangeData.BSaveChanges.Visible:=true;
-    FchangeData.BChanges.Visible:=true;
+    FchangeData.BChanges.Visible:=false;
     FchangeData.BSave.Visible:=false;
+    FChangeData.ImageName:=ListOFFilm.pic;
     IF  ListOFFilm.pic <> '' then
       FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic)
     else
@@ -261,7 +275,6 @@ procedure TFMain.DeletLV(Sender:TOBject);
 Var
   Temp:TFilm;
 begin
-  FLagChanges:=true;
   if LVFilm.SelCount=1 then
   begin
     ListOfFilm:=HeaderList;
@@ -273,6 +286,7 @@ begin
     ListOfFilm.next:=ListOfFilm.next.next;
     dispose(Temp);
     showLV(Fmain);
+    FLagChanges:=true;
   end;
 end;
 
@@ -364,8 +378,6 @@ function TFMain.TestOfSave(Changes:boolean):boolean;
 Var
   MSBResult:integer;
 begin
-{глупая правка}
-  MSBResult:=2;
   Result:= not Changes;
   if  Changes then
   MSBResult:= MessageBox(Handle, 'Файл был изменен. Сохранить изменения?', 'Сохранить?', MB_YESNOCANCEL or MB_ICONQUESTION);
@@ -422,6 +434,7 @@ begin
   FChangeData.MMSubr.Enabled:=false;
   FChangeData.BChangePic.Enabled:=false;
   FChangeData.BSaveChanges.Enabled:=false;
+  FchangeData.BChanges.Visible:=true;
   FChangeData.BSave.Visible:=false;
   FChangeData.BChanges.Enabled:=true;
 end;
@@ -458,6 +471,7 @@ begin
       ListItem.Caption:=listofFilm.Name;
       ListItem.SubItems.add(listofFilm.Year);
       ListItem.SubItems.add(listofFilm.Genre);
+      ListItem.SubItems.add(listofFilm.Time);      
       LVFilm.Items.EndUpdate;
       inc(i);
     end;
@@ -545,7 +559,7 @@ begin
     ListItem.Caption:=SortMass[i].Name;
     ListItem.SubItems.add(SortMass[i].Year);
     ListItem.SubItems.add(SortMass[i].Genre);
-
+    ListItem.SubItems.add(SortMass[i].Time);
   end;
   LVFilm.Items.EndUpdate;
 end;

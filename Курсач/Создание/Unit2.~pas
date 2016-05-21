@@ -84,9 +84,6 @@ end;
 
 
 procedure TFChangeData.BSaveClick(Sender: TObject);
-Var
- i:integer;
-
 begin
   FMain.ListOfFilm:=FMain.HeaderList;
   while Fmain.ListOfFilm.next<>nil do

@@ -25,7 +25,7 @@ object FChangeData: TFChangeData
       Left = 16
       Top = 64
       Width = 241
-      Height = 249
+      Height = 305
       Stretch = True
     end
     object LYear: TLabel
@@ -174,7 +174,7 @@ object FChangeData: TFChangeData
     end
     object BChangePic: TButton
       Left = 16
-      Top = 320
+      Top = 368
       Width = 233
       Height = 25
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1087#1086#1089#1090#1077#1088
@@ -200,7 +200,9 @@ object FChangeData: TFChangeData
         #1041#1086#1077#1074#1080#1082
         #1052#1080#1089#1090#1080#1082#1072
         #1060#1101#1085#1090#1072#1079#1080
-        #1044#1088#1072#1084#1072)
+        #1044#1088#1072#1084#1072
+        #1060#1072#1085#1090#1072#1089#1090#1080#1082#1072
+        #1055#1088#1080#1082#1083#1102#1095#1077#1085#1080#1103)
     end
     object EContry: TEdit
       Left = 416
@@ -340,8 +342,8 @@ object FChangeData: TFChangeData
       TabOrder = 11
     end
     object BSaveChanges: TButton
-      Left = 96
-      Top = 368
+      Left = 88
+      Top = 400
       Width = 161
       Height = 25
       Caption = 'C'#1086#1093#1088#1072#1085#1080#1090#1100' '#1080#1079#1084#1077#1085#1077#1085#1080#1103
@@ -349,8 +351,8 @@ object FChangeData: TFChangeData
       OnClick = BSaveChangesClick
     end
     object BChanges: TButton
-      Left = 24
-      Top = 368
+      Left = 16
+      Top = 400
       Width = 75
       Height = 25
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
@@ -358,8 +360,8 @@ object FChangeData: TFChangeData
       OnClick = BChangesClick
     end
     object BSave: TButton
-      Left = 96
-      Top = 368
+      Left = 16
+      Top = 440
       Width = 75
       Height = 25
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
@@ -368,7 +370,7 @@ object FChangeData: TFChangeData
     end
   end
   object dlgAddPic: TOpenPictureDialog
-    Left = 40
-    Top = 432
+    Left = 96
+    Top = 472
   end
 end

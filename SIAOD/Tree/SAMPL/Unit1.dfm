@@ -3,7 +3,7 @@ object FMain: TFMain
   Top = 55
   Width = 1011
   Height = 632
-  Caption = 'Graph Drawing Demonstration (using WinGraphViz.dll)'
+  Caption = #1055#1086#1089#1090#1088#1086#1077#1085#1080#1077' '#1076#1077#1088#1077#1074#1100#1077#1074' '#1087#1086#1080#1089#1082#1072' + 3 '#1087#1088#1086#1093#1086#1076#1072
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object FMain: TFMain
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 231
+    Left = 321
     Top = 0
     Width = 7
     Height = 601
@@ -23,7 +23,7 @@ object FMain: TFMain
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 231
+    Width = 321
     Height = 601
     Align = alLeft
     BevelOuter = bvLowered
@@ -59,16 +59,43 @@ object FMain: TFMain
       ParentFont = False
       TabOrder = 2
     end
+    object LR: TMemo
+      Left = 16
+      Top = 184
+      Width = 185
+      Height = 89
+      Lines.Strings = (
+        'LR')
+      TabOrder = 3
+    end
+    object LS: TMemo
+      Left = 16
+      Top = 296
+      Width = 185
+      Height = 89
+      Lines.Strings = (
+        'LS')
+      TabOrder = 4
+    end
+    object LO: TMemo
+      Left = 16
+      Top = 400
+      Width = 185
+      Height = 89
+      Lines.Strings = (
+        'LO')
+      TabOrder = 5
+    end
   end
   object WebBrowser1: TWebBrowser
-    Left = 238
+    Left = 328
     Top = 0
-    Width = 765
+    Width = 675
     Height = 601
     Align = alClient
     TabOrder = 1
     ControlData = {
-      4C000000114F00001D3E00000000000000000000000000000000000000000000
+      4C000000C34500001D3E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000

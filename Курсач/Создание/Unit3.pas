@@ -31,7 +31,7 @@ procedure TFSearch.BBStartSearchClick(Sender: TObject);
 begin
   if EName.Text<>'' then
   begin
-    FMain.Search(FMain,EName.Text);
+    FMain.Search(EName.Text,Fmain.HeaderList,Fmain.ListOfFilm);
     close;
   end;
 end;

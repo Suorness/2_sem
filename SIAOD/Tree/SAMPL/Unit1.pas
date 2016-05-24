@@ -30,6 +30,9 @@ type
     Button1: TButton;
     Button2: TButton;
     EValue: TEdit;
+    LR: TMemo;
+    LS: TMemo;
+    LO: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -45,6 +48,9 @@ type
     procedure sew(var Node:Ttree;root:ttree);
     procedure obxod(node:ttree;root:ttree);
     procedure ToArray(sender:tObject);
+    procedure right_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
+    procedure simm_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
+    procedure obr_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
   end;
 
 var
@@ -58,8 +64,81 @@ implementation
 uses
   WINGRAPHVIZLib_TLB;
 
+//flacBranch   -true right
+//              false left
+procedure TFmain.right_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
+begin
+  if node<>nil then
+  begin
+    LR.text:=LR.text+ ' ('+ inttostr(node.data)+')';
+    right_obxod(Node.left,node,false,root);
+    right_obxod(Node.right,node,true,root);
+  end;
+  if node=nil then
+  begin
+    LR.text:=LR.text+ ' 0 '+ inttostr(father.data);
+    if flacbranch then
+    begin
+      LR.text:=LR.text+ ' '+ inttostr(father.father.data);
+      while (father.father.left<>father) and (father.father<>root) do
+      begin
+        father:=father.father;
+        LR.text:=LR.text+ ' '+ inttostr(father.father.data);
+      end;
+    end;
+  end;
 
+end;
+//flacBranch   -true right
+//              false left
 
+procedure TFmain.simm_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
+begin
+  if node<>nil then
+  begin
+    Ls.text:=Ls.text+ ' '+ inttostr(node.data);
+    simm_obxod(node.left,node,false,root);
+    Ls.text:=Ls.text+ ' ('+ inttostr(node.data)+')';
+    simm_obxod(node.right,node,true,root)
+  end;
+  if node = nil then
+
+  begin
+     Ls.text:=Ls.text+ ' 0 ';
+     if flacBranch then
+     begin
+        Ls.text:=Ls.text+  ' '+ inttostr(father.data);
+        while (father.father.left<>father) and (father.father<>root) do
+        begin
+          //father:=father.father;
+          Ls.text:=Ls.text+ ' '+ inttostr(father.father.data);
+          father:=father.father;
+        end;
+     end;
+  end;
+
+end;
+procedure Tfmain.obr_obxod(Node:TTree;father:TTree;flacBranch:boolean;root:ttree);
+begin
+  if node<>nil then
+  begin
+    Lo.text:=Lo.text+  ' '+ inttostr(node.data);
+    obr_obxod(node.left,node,false,root);
+    obr_obxod(node.right,node,true,root);
+    Lo.text:=Lo.text+ ' ('+ inttostr(node.data)+')';
+    if (father<>nil) and (not flacbranch) then
+      Lo.text:=Lo.text+ ' ' + inttostr(father.data);
+  end;
+  if node = nil then
+  begin
+    if flacBranch then
+    begin
+      Lo.text:=Lo.text+  ' 0 ';
+    end
+    else
+      Lo.text:=Lo.text+  ' 0 '+inttostr(father.data);
+  end;
+end;
 
 
 procedure TFMain.DrawPngGraphForData(Data: string);
@@ -272,6 +351,13 @@ begin
   begin
     createTree(Sender,massData[i],root);
   end;
+  LR.text:='Прямой обход: ';
+  right_obxod(root,nil,true,root);
+  Ls.text:='Симметричный обход: ';
+  simm_obxod(root,nil,true,root);
+  Ls.text:=Ls.text+' '+inttostr(root.data);
+  lo.Text:='Кольцевой обход: ';
+  obr_obxod(root,nil,true,root);
   Straight(Sender,root,str,nil,i);
   str:=str+';}';
 
@@ -324,3 +410,4 @@ end;
 
 end.
 //5 4 9 2 7 10 6 8 3
+//8 6 7 4 1 12 9 14 11

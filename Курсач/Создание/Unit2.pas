@@ -75,10 +75,17 @@ uses  unit1;
 {$R *.dfm}
 
 procedure TFChangeData.BChangePicClick(Sender: TObject);
+Var
+  i:integer;
+  Endtest:boolean;
 begin
-  if not dlgAddPic.Execute then exit;
-  ImageName:= dlgAddPic.Files[0];
-  ImgPoster.Picture.LoadFromFile(Imagename);
+  if not dlgAddPic.Execute then exit;       {!!!!}
+  ImageName:= dlgAddPic.FileName;
+  Imagename:='\pic\'+ExtractFileName(Imagename);
+  if FileExists(Fmain.way+Imagename) then
+    ImgPoster.Picture.LoadFromFile(Fmain.way+Imagename)
+  else
+    ImgPoster.Picture.LoadFromFile(Fmain.Poster_None);
 end;
 
 
@@ -103,7 +110,7 @@ begin
   FMain.ListOfFilm.Time:=inttostr(SPTime.Value);
   FMain.ListOfFilm.Disk:=MMSubr.Text;
   FMain.ListOfFilm.pic:=ImageName;
-  Fmain.showLV(Fmain);
+  Fmain.showLV(Fmain.HeaderList,Fmain.ListOfFilm);
   FMain.FLagChanges:=true;
   FChangeData.Close;
 
@@ -125,7 +132,7 @@ begin
   FMain.ListOfFilm.Disk:=MMSubr.Text;
   FMain.ListOfFilm.pic:=ImageName;
   FMain.FLagChanges:=true;
-  Fmain.showLV(Fmain);
+  Fmain.showLV(Fmain.HeaderList,Fmain.ListOfFilm);
   FChangeData.Close;
 end;
 

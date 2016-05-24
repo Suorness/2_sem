@@ -30,7 +30,7 @@ uses Unit1;
 
 procedure TFSort.BBSortClick(Sender: TObject);
 begin
-  Fmain.StartSort(Fmain,RGTypeSort.ItemIndex);
+  Fmain.StartSort(RGTypeSort.ItemIndex);
   Close;
 end;
 

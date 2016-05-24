@@ -91,27 +91,35 @@ type
     FFileName:string;
 
   public
+    way:string;
     ListOfFilm,HeaderList:TFilm;
     Poster_None:string[255];
     FLagChanges:boolean;
     procedure AddToLV(Sender:TObject);
-    procedure ChangeLV(sender:TOBject);
-    procedure DeletLV(Sender:TOBject);
-    procedure showLV(Sender:TOBject);
-    function SaveFilm(Sender:ToBject;AlwaysAsk: Boolean): Boolean;
+    //procedure ChangeLV(sender:TOBject);
+    procedure ChangeLV(HeaderList:TFilm;var ListOfFilm:TFilm);
+    //procedure DeletLV(Sender:TOBject);
+    procedure DeletLV(HeaderList:TFilm;Var ListOfFilm:TFilm);
+    //procedure showLV(Sender:TOBject);
+    procedure showLV (HeaderList,ListOfFilm:TFilm);
+    //function SaveFilm(Sender:ToBject;AlwaysAsk: Boolean): Boolean;
+    function SaveFilm(AlwaysAsk: Boolean;Var changes:boolean): Boolean;
     procedure ReadFile(Sender:TOBject);
-    procedure Search(sender:Tobject;StrSearch:string);
-    //function FuncName(Senger:TObject;First,Second:ListFilm):boolean;
+    //procedure Search(sender:Tobject;StrSearch:string);
+    procedure Search(StrSearch:string;HeaderList,ListOfFilm:TFilm);
 
     // если необходимо, запросить сохранение изменений
     // true если продолжаем (открываем новый файл или еще что)
     // false отмена продолжения (не открываем)
-    function TestOfSave(Changes:boolean):boolean;
-   procedure sortLV(Sender:TObject;SRav:Func);
-   procedure StartSort(Sender:TObject;TypeSort:integer);
-   procedure randomFilm(Sender:TObject);
+   function TestOfSave(Changes:boolean):boolean;
+   //procedure sortLV(Sender:TObject;SRav:Func);
+   procedure sortLV(HeaderList,ListOfFilm:TFilm;SRav:Func);
+   procedure StartSort(TypeSort:integer);
+   //procedure randomFilm(Sender:TObject);
+   procedure randomFilm(HeaderList,ListOfFilm:TFilm);
 
   end;
+  
 
 var
   FMain: TFMain;
@@ -128,7 +136,7 @@ begin
   if  not dlgOpen.Execute then exit;
   FFileName := dlgOpen.Files[0];
   ReadFile(Fmain);
-  showLV(FMain);
+  showLV(HeaderList,ListOfFilm);
 end;
 
 procedure TFMain.TopFileNewClick(Sender: TObject);
@@ -158,12 +166,13 @@ end;
 
 procedure TFMain.FormCreate(Sender: TObject);
 begin
+  way:=GetCurrentDir;
   //Создание заглавного элемента и основного списка
   new(HeaderList);
   ListOfFilm:=headerList;
   listofFilm.next:=nil;
   FLagChanges:=false;
-  Poster_None:='C:\Users\Mike\Desktop\Labs\2_sem\курсач\Создание\pic\poster_none.jpg';
+  Poster_None:=way+'\pic\poster_none.jpg';
   FFileName:='';
 end;
 
@@ -206,7 +215,8 @@ begin
 end;
 
 {ListOfFilm HeaderList}
-procedure TFMain.showLV (Sender:TOBject);
+//procedure TFMain.showLV (Sender:TOBject);
+procedure TFMain.showLV (HeaderList,ListOfFilm:TFilm);
 Var
   ListItem:TlistItem;
 begin
@@ -225,7 +235,9 @@ begin
  LVFilm.Items.EndUpdate;
 end;
 {ListOFFilm}
-procedure TFMain.ChangeLV(Sender:TOBject);
+
+//procedure TFMain.ChangeLV(Sender:TOBject);
+procedure TFMain.ChangeLV(HeaderList:TFilm;var ListOfFilm:TFilm);
 begin
   if LVFilm.SelCount=1 then
   begin
@@ -258,20 +270,21 @@ begin
     FchangeData.SPWath.Value:=strtoint(ListOfFilm.Watch);
     FchangeData.SPTime.Value:=strtoint(ListOfFilm.Time);
     FchangeData.MMSubr.Text:=ListOfFilm.Disk;
+    FchangeData.BChangePic.Enabled:=true;
     FchangeData.BSaveChanges.Visible:=true;
     FchangeData.BChanges.Visible:=false;
     FchangeData.BSave.Visible:=false;
     FChangeData.ImageName:=ListOFFilm.pic;
-    IF  ListOFFilm.pic <> '' then
-      FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic)
+    IF  FileExists(way+ListOFFilm.pic) then
+      FchangeData.ImgPoster.Picture.LoadFromFile(way+ListOFFilm.pic)
     else
       FchangeData.ImgPoster.Picture.LoadFromFile(FMain.Poster_None)
-
   end;
 end;
 
 {Var listOfFilm}
-procedure TFMain.DeletLV(Sender:TOBject);
+//procedure TFMain.DeletLV(Sender:TOBject);
+procedure TFMain.DeletLV(HeaderList:TFilm;Var ListOfFilm:TFilm);
 Var
   Temp:TFilm;
 begin
@@ -285,25 +298,24 @@ begin
     Temp:=ListOfFilm.next;
     ListOfFilm.next:=ListOfFilm.next.next;
     dispose(Temp);
-    showLV(Fmain);
+    showLV(HeaderList,ListOfFilm);
     FLagChanges:=true;
   end;
 end;
 
 procedure TFMain.BChangeClick(Sender: TObject);
 begin
-  ChangeLV(FMain);
-  //SaveFilm(FMain);
+  ChangeLV(HeaderList,ListOfFilm);
 end;
 
 procedure TFMain.BDeletClick(Sender: TObject);
 begin
-  DeletLV(FMain);
+  DeletLV(HeaderList,ListOfFilm);
   //SaveFilm(Fmain);
 end;
 
 {Var FLagChanges FFileName}
-function TFMain.SaveFilm(Sender:TOBject;AlwaysAsk: Boolean): Boolean;
+function TFMain.SaveFilm(AlwaysAsk: Boolean;Var changes:boolean): Boolean;
 Var
   FileForSave:File of ListFilm;
   Data:ListFilm;
@@ -325,8 +337,8 @@ begin
     ListOfFilm:=ListOfFilm.next;
   end;
   closeFile(FileForSave);
-  
-  FLagChanges := False;
+
+  changes := False;
   Result := True
 end;
 
@@ -365,13 +377,13 @@ end;
 
 procedure TFMain.BTEstSaveClick(Sender: TObject);
 begin
-  SaveFilm(FMain,true);
+  SaveFilm(true,FlagChanges);
 end;
 
 procedure TFMain.BTestOpenClick(Sender: TObject);
 begin
   ReadFile(Fmain);
-  showLV(FMain);
+  showLV(HeaderList,ListOfFilm);
 end;
 
 function TFMain.TestOfSave(Changes:boolean):boolean;
@@ -384,23 +396,24 @@ begin
     case MSBResult of
       IDYES:
         begin
-          Result := SaveFilm(Fmain,false);
+          Result := SaveFilm(false,changes);
         end;
       IDNO:
         Result := True;
       IDCANCEL:
         Result := False;
+
     end;
 end;
 
 procedure TFMain.TopFileSaveClick(Sender: TObject);
 begin
-  SaveFilm(Fmain,false);
+  SaveFilm(false,Flagchanges);
 end;
 
 procedure TFMain.TopFileSaveAsClick(Sender: TObject);
 begin
-  SaveFilm(Fmain,true);
+  SaveFilm(true,Flagchanges);
 end;
 
 procedure TFMain.BBAddClick(Sender: TObject);
@@ -410,17 +423,17 @@ end;
 
 procedure TFMain.BBChangeClick(Sender: TObject);
 begin
-  ChangeLV(FMain);
+  ChangeLV(HeaderList,ListOfFilm);
 end;
 
 procedure TFMain.BBDelClick(Sender: TObject);
 begin
-  DeletLV(FMain);
+  DeletLV(HeaderList,ListOfFilm);
 end;
 
 procedure TFMain.BBVieClick(Sender: TObject);
 begin
-  ChangeLV(FMain);
+  ChangeLV(HeaderList,ListOfFilm);
   FChangeData.ETitle.Enabled:=false;
   FChangeData.SPYear.Enabled:=false;
   FChangeData.CBGenre.Enabled:=false;
@@ -450,11 +463,12 @@ end;
 
 procedure TFMain.BBUpDateClick(Sender: TObject);
 begin
-  showLV(Fmain);
+  showLV(HeaderList,ListOfFilm);
 end;
 
 {ListOfFilm}
-procedure TFmain.Search(sender:Tobject;StrSearch:string);
+//procedure TFmain.Search(sender:Tobject;StrSearch:string);
+procedure TFmain.Search(StrSearch:string;HeaderList,ListOfFilm:TFilm);
 Var
   ListItem:TlistItem;
   i:integer;
@@ -502,7 +516,7 @@ begin
 end;
 
 {ListOfFilm,HeaderList}
-procedure TFMain.sortLV(Sender:TObject;SRav:Func);
+procedure TFMain.sortLV(HeaderList,ListOfFilm:TFilm;SRav:Func);
 Var
   SortMass:array of ListFilm;
   search:boolean;
@@ -570,24 +584,25 @@ begin
   FSort.Show;
 end;
 
-procedure TFmain.StartSort(Sender:Tobject;TypeSort:integer);
+procedure TFmain.StartSort(TypeSort:integer);
 begin
   case TypeSort of
-  0:    sortLV(Fmain,FuncName);
-  1:    sortLV(Fmain,FuncYear);
-  2:    sortLV(Fmain,FuncTime);
-  3:    sortLV(Fmain,FuncContry);
+  0:    sortLV(HeaderList,ListOfFilm,FuncName);
+  1:    sortLV(HeaderList,ListOfFilm,FuncYear);
+  2:    sortLV(HeaderList,ListOfFilm,FuncTime);
+  3:    sortLV(HeaderList,ListOfFilm,FuncContry);
   end;
 end;
 
 {ListOfFilm}
-procedure TFMain.randomFilm(Sender:TObject);
+//procedure TFMain.randomFilm(Sender:TObject);
+procedure TFMain.randomFilm(HeaderList,ListOfFilm:TFilm);
 Var
   i:integer;
 begin
   randomize;
   LVFilm.Clear;
-  showLV(Fmain);
+  showLV(HeaderList,ListOfFilm);
   ListOfFilm:=HeaderList;
   For i:=1 to random(LVFilm.Items.Count-1)+1 do
   begin
@@ -608,11 +623,12 @@ begin
   FchangeData.BSaveChanges.Visible:=true;
   FchangeData.BChanges.Visible:=true;
   FchangeData.BSave.Visible:=false;
-  IF  ListOFFilm.pic <> '' then
-    FchangeData.ImgPoster.Picture.LoadFromFile(ListOFFilm.pic)
+
+  IF  FileExists(way+ListOFFilm.pic) then
+    FchangeData.ImgPoster.Picture.LoadFromFile(way+ListOFFilm.pic)
   else
     FchangeData.ImgPoster.Picture.LoadFromFile(FMain.Poster_None);
-
+{}
   FChangeData.ETitle.Enabled:=false;
   FChangeData.SPYear.Enabled:=false;
   FChangeData.CBGenre.Enabled:=false;
@@ -632,7 +648,7 @@ end;
 
 procedure TFMain.BBRandomClick(Sender: TObject);
 begin
-  randomFilm(FMain);
+  randomFilm(HeaderList,ListOfFilm);
 end;
 
 procedure TFMain.TopExitClick(Sender: TObject);

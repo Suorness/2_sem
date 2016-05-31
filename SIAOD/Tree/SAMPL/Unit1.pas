@@ -79,8 +79,9 @@ begin
     LR.text:=LR.text+ ' 0 '+ inttostr(father.data);
     if flacbranch then
     begin
-      LR.text:=LR.text+ ' '+ inttostr(father.father.data);
-      while (father.father.left<>father) and (father.father<>root) do
+      if father.father<>nil then
+        LR.text:=LR.text+ ' '+ inttostr(father.father.data);
+      while (father.father<>root)and (father.father<>nil) and (father.father.left<>father) do
       begin
         father:=father.father;
         LR.text:=LR.text+ ' '+ inttostr(father.father.data);
@@ -108,8 +109,8 @@ begin
      if flacBranch then
      begin
         Ls.text:=Ls.text+  ' '+ inttostr(father.data);
-        while (father.father.left<>father) and (father.father<>root) do
-        begin
+        while (father.father<>root)and (father.father<>nil) and (father.father.left<>father) do
+      begin
           //father:=father.father;
           Ls.text:=Ls.text+ ' '+ inttostr(father.father.data);
           father:=father.father;
@@ -257,7 +258,7 @@ begin
         if node.father.right=node then
         begin
           sewItem:=node.father;
-          while (SewItem<>sewItem.father.left) and (SewItem.father<>root) do
+          while (SewItem.father<>root) and(SewItem<>sewItem.father.left)  do
           begin
             sewItem:=SewItem.father;
           end;

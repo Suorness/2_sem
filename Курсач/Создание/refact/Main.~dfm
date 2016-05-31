@@ -1,9 +1,10 @@
 object FMain: TFMain
-  Left = 269
-  Top = 27
-  Width = 844
-  Height = 666
-  Caption = 'FMain'
+  Left = 457
+  Top = 43
+  BorderStyle = bsSingle
+  Caption = #1055#1088#1086#1075#1088#1072#1084#1084#1085#1086#1077' '#1089#1088#1077#1076#1089#1090#1074#1086' '#1092#1080#1083#1100#1084#1086#1090#1077#1082#1072
+  ClientHeight = 616
+  ClientWidth = 836
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,14 +20,14 @@ object FMain: TFMain
     Left = 0
     Top = 104
     Width = 833
-    Height = 481
+    Height = 513
     Caption = 'PanelFilm'
     TabOrder = 0
     object LVFilm: TListView
       Left = 1
       Top = 1
       Width = 831
-      Height = 479
+      Height = 511
       Align = alClient
       Columns = <
         item
@@ -1338,6 +1339,7 @@ object FMain: TFMain
       end
       object ExpTxt: TMenuItem
         Caption = #1069#1082#1089#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1074' txt'
+        OnClick = ExpTxtClick
       end
       object TopFuncUpdate: TMenuItem
         Caption = #1054#1073#1085#1086#1074#1080#1090#1100
@@ -1348,9 +1350,11 @@ object FMain: TFMain
       Caption = #1057#1087#1088#1072#1074#1082#1072
       object TopAboutProgr: TMenuItem
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+        OnClick = TopAboutProgrClick
       end
       object TopAboutA: TMenuItem
         Caption = #1054#1073' '#1072#1074#1090#1086#1088#1077
+        OnClick = TopAboutAClick
       end
     end
     object TopExit2: TMenuItem

@@ -139,7 +139,7 @@ begin
       Lo.text:=Lo.text+  ' 0 '+inttostr(father.data);
   end;
 end;
- //8 6 7 4 1 12 9 14 11
+
 
 procedure TFMain.DrawPngGraphForData(Data: string);
 var
@@ -410,3 +410,4 @@ end;
 
 end.
 //5 4 9 2 7 10 6 8 3
+//8 6 7 4 1 12 9 14 11

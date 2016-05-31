@@ -1,8 +1,8 @@
 object FMain: TFMain
-  Left = 90
-  Top = 18
+  Left = 457
+  Top = 43
   BorderStyle = bsSingle
-  Caption = 'FMain'
+  Caption = #1055#1088#1086#1075#1088#1072#1084#1084#1085#1086#1077' '#1089#1088#1077#1076#1089#1090#1074#1086' '#1092#1080#1083#1100#1084#1086#1090#1077#1082#1072
   ClientHeight = 616
   ClientWidth = 836
   Color = clBtnFace

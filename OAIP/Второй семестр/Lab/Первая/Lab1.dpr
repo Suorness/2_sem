@@ -5,9 +5,11 @@ Program Lab1;
 uses
   SysUtils,
   windows;
-
+Const
+  Size=9;
 Type
   TArray = array[1..3,1..3] of integer;
+  TArrtayByte= array[1..Size] of byte;
 
 Const
   A:TArray = ((1,2,3),(0,-2,3),(1,1,1));
@@ -18,9 +20,11 @@ Var
   i,j:integer;
 
 {Алгоритм сложения двух матриц размером 3 на 3}
-procedure add (Var MatA,MatB:TArray);
+{procedure add (Var MatA,MatB:TArray);}
+procedure add(Var D;const Size:integer);
 Var
   i,j:integer;
+  MA:array[1..Size] of byte absolute D
 begin
   for i:=1 to 3 do
     for j:=1 to 3 do

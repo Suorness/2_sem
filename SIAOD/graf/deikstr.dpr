@@ -7,7 +7,7 @@ uses
 
 Const
 // оличество вершин
-  Size=5;
+  Size=6;
 // бесконечно большое значение
 //
   MORE=99999;
@@ -17,17 +17,28 @@ Type
   TLen=array[1..Size] of  integer;
   TSearch = function (i,apex:integer;Var way:TLen):boolean;
   TSearch_Comp = function (i,value:integer;way:Tlen):boolean;
+  TList=^TTlist;
+  TTlist= record
+    way:string;
+    leng:integer;
+    next:TList;
+    end;
 //матрица смежности графа
 // 0 где нет пути
 // если не 0 это размер дуги
 Const
   MatrSM:TMatr =
-  ((0,10,30,50,10),
+  ((0,7,9,0,0,14),
+   (7,0,10,15,0,0),
+   (9,10,0,11,0,2),
+   (0,15,11,0,6,0),
+   (0,0,0,6,0,7),
+   (14,0,2,0,9,0));
+  {((0,10,30,50,10),
   (0,0,0,0,0),
-  (0,0,0,0,10),
+  (0,0,0,0,0),
   (0,40,20,0,0),
-  (0,0,0,30,0));
-
+  (0,0,0,30,0));  }
 Var
 //ћассив посещений узла
   visit:TVisit;
@@ -35,6 +46,16 @@ Var
   way:TLen;
   i:integer;
 
+  header:TList;
+  List:TList;
+
+procedure createWay(Title:TList;var List:Tlist);
+begin
+  while list.next<>nil do
+    list.next:=list;
+  new(list.next);
+  list:=list.next;
+end;
 procedure waystart(firstH:integer;Var way:TLen;Max_s:boolean);
 Var
   i:integer;
@@ -116,14 +137,16 @@ begin
 end;
 
 //apex-входна€ вершина
-procedure Compare_Ways(apex:integer;var way:TLen;var visit:TVisit;Max_or_min:TSearch);
+procedure Compare_Ways(apex:integer;var way:TLen;var visit:TVisit;Max_or_min:TSearch;var noway:boolean);
 Var
   i:integer;
 begin
+  noway:=true;
   for i:=1 to size do
   begin
     if MatrSM[apex,i]<>0 then
     begin
+      noway:=false;
       if Max_or_min(i,apex,way) then
       begin
         way[i]:=way[apex]+MatrSM[apex,i];
@@ -142,28 +165,46 @@ begin
     if not visit[i] then
       result:=false;
 end;
-// max_min_fl = true max
-//           false = min
+// max_min_fl = true =  max
+//              false = min
 procedure deikstra(first:integer; var visit:TVisit;Max_or_min:TSearch;max_min_fl:boolean);
+Var
+  noway:boolean;
+  i:integer;
 begin
 
   waystart(first,way,max_min_fl);  //указываем вершину в которую вошли
-  Compare_Ways(first,way,visit,Max_or_min);
-  while not allvisit(visit) do
+  Compare_Ways(first,way,visit,Max_or_min,noway);
+  if not noway then
   begin
-    if max_min_fl then
-      Compare_Ways(Determine_branch(way,visit,ifmax_v),way,visit,Max_or_min)
-    else
-      Compare_Ways(Determine_branch(way,visit,ifmin_v),way,visit,Max_or_min)
+    while not allvisit(visit) do
+    begin
+      if max_min_fl then
+        Compare_Ways(Determine_branch(way,visit,ifmax_v),way,visit,Max_or_min,noway)
+      else
+        Compare_Ways(Determine_branch(way,visit,ifmin_v),way,visit,Max_or_min,noway)
+    end;
+  end
+  else
+  begin
+    for i:=1 to Size do
+    begin
+      way[i]:=0;
+    end;
   end;
+
 end;
 
 begin
+  new(header);
+  List:=header;
+  list.next:=nil;
   writeln('Max distanse');
   visitfalse(visit);
   deikstra(1,visit,max_way_comp,true);
   for i:=1 to size do
     write(way[i], ' ');
+  writeln;
   writeln('Min distanse');
   visitfalse(visit);
   deikstra(1,visit,min_way_comp,false);
